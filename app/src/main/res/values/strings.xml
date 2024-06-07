@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RecipeGenerator</string>
+    <string name="scanning_requires_camera_permission">Scanning requires camera permission</string>
 </resources>
