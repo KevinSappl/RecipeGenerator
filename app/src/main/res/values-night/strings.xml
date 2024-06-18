@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">RecipeGenerator</string>
     <string name="recipe_generator_logo">Recipe Generator Logo</string>
     <string name="add_recipe_btn">Hinzufügen</string>
     <string name="del_recipe_btn">Löschen</string>
