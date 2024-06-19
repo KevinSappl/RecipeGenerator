@@ -1,3 +1,5 @@
+package com.example.recipegenerator
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -6,8 +8,7 @@ import android.widget.Filterable
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.recipegenerator.GroceryItem
-import com.example.recipegenerator.R
+
 class GroceryAdapter(private var groceries: MutableList<GroceryItem>, private val onDelete: (GroceryItem) -> Unit) : RecyclerView.Adapter<GroceryAdapter.GroceryViewHolder>(),
     Filterable {
 
@@ -15,6 +16,7 @@ class GroceryAdapter(private var groceries: MutableList<GroceryItem>, private va
 
     class GroceryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView = view.findViewById(R.id.groceryName)
+        val deleteButton: ImageButton = view.findViewById(R.id.deleteButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroceryViewHolder {
@@ -25,7 +27,7 @@ class GroceryAdapter(private var groceries: MutableList<GroceryItem>, private va
     override fun onBindViewHolder(holder: GroceryViewHolder, position: Int) {
         val grocery = filteredGroceries[position]
         holder.name.text = grocery.name
-        holder.itemView.setOnClickListener {
+        holder.deleteButton.setOnClickListener {
             onDelete(grocery)
         }
     }

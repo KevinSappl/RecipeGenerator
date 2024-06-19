@@ -1,11 +1,11 @@
 package com.example.recipegenerator
 
-import GroceryAdapter
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.SearchView
+import java.io.File
 
 class GroceriesListActivity : AppCompatActivity() {
 
@@ -16,6 +16,8 @@ class GroceriesListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_groceries_list)
+
+        createSampleJsonFile()
 
         recyclerView = findViewById(R.id.recyclerView)
         searchView = findViewById(R.id.searchView)
@@ -43,5 +45,19 @@ class GroceriesListActivity : AppCompatActivity() {
         GroceryUtils.deleteGrocery(this, grocery)
         val updatedGroceries = GroceryUtils.loadGroceries(this)
         groceryAdapter.updateData(updatedGroceries)
+    }
+
+    private fun createSampleJsonFile() {
+        val file = File(filesDir, "groceries.json")
+        if (!file.exists()) {
+            val initialGroceries = listOf(
+                GroceryItem("Tomatoes"),
+                GroceryItem("Potatoes"),
+                GroceryItem("Carrots"),
+                GroceryItem("Onions"),
+                GroceryItem("Garlic")
+            )
+            GroceryUtils.saveGroceries(this, initialGroceries)
+        }
     }
 }

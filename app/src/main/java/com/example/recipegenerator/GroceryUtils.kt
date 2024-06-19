@@ -27,11 +27,6 @@ object GroceryUtils {
         return gson.fromJson(jsonString, type)
     }
 
-    fun addGrocery(context: Context, grocery: GroceryItem) {
-        val groceries = loadGroceries(context)
-        groceries.add(grocery)
-        saveGroceries(context, groceries)
-    }
 
     fun deleteGrocery(context: Context, grocery: GroceryItem) {
         val groceries = loadGroceries(context)
