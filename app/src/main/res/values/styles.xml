@@ -1,0 +1,23 @@
+<resources>
+
+    <!-- Base application theme -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/design_default_color_primary</item>
+        <item name="colorPrimaryDark">@color/design_default_color_primary_dark</item>
+        <item name="colorAccent">@color/cardview_shadow_start_color</item>
+    </style>
+
+    <!-- Custom button style -->
+    <style name="CustomButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/button_operations_background</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:padding">16dp</item>
+    </style>
+
+    <!-- Custom button bar style -->
+    <style name="CustomButtonBarStyle" parent="Widget.AppCompat.ButtonBar">
+        <item name="android:buttonStyle">@style/CustomButtonStyle</item>
+    </style>
+
+</resources>
