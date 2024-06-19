@@ -2,15 +2,16 @@ package com.example.recipegenerator
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
 
-class RecipesOperationsActivity : AppCompatActivity() {
+class GroceriesOperationsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_recipes_operations)
+        setContentView(R.layout.activity_groceries_operations)
 
 
         val btnHinzufugen = findViewById<Button>(R.id.btnHinzufügen)
@@ -25,8 +26,10 @@ class RecipesOperationsActivity : AppCompatActivity() {
 
         btnLoschen.setOnClickListener {
             // Handle the click for Löschen button
-            //val intent = Intent(this, RecipeListActivity::class.java)
-            //startActivity(intent)
+            Log.d("RecipesOperationsActivity", "Loschen button clicked")
+            val intent = Intent(this, GroceriesListActivity::class.java)
+            startActivity(intent)
         }
+
     }
 }

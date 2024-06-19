@@ -3,4 +3,5 @@
     <string name="recipe_generator_logo">Recipe Generator Logo</string>
     <string name="add_recipe_btn">Hinzufügen</string>
     <string name="del_recipe_btn">Löschen</string>
+    <string name="del_grocery">Löschen</string>
 </resources>
