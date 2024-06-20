@@ -1,8 +1,10 @@
 package com.example.recipegenerator
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.util.SparseArray
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -15,16 +17,23 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.vision.CameraSource
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
+import java.io.IOException
 
 
 class FoodScanner : AppCompatActivity() {
     var barcodeInfo: TextView? = null
     var cameraView: SurfaceView? = null
     var cameraSource: CameraSource? = null
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var barcodeAdapter: BarcodeAdapter
+    private val barcodeList = mutableListOf<String>()
+    private var readyToDetect = true;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,15 +46,19 @@ class FoodScanner : AppCompatActivity() {
         }
         cameraView = findViewById<View>(R.id.camera_view) as SurfaceView
         barcodeInfo = findViewById<View>(R.id.txtContent) as TextView
+        recyclerView = findViewById<View>(R.id.recyclerView) as RecyclerView
 
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        barcodeAdapter = BarcodeAdapter(barcodeList)
+        recyclerView.adapter = barcodeAdapter
 
         val barcodeDetector: BarcodeDetector =
-            BarcodeDetector.Builder(this)
-                .setBarcodeFormats(Barcode.CODE_128) //QR_CODE)
+            BarcodeDetector.Builder(this@FoodScanner)
+                .setBarcodeFormats(Barcode.ALL_FORMATS)
                 .build()
 
         cameraSource = CameraSource.Builder(this, barcodeDetector)
-            .setRequestedPreviewSize(640, 480)
+            .setRequestedPreviewSize(800, 800)
             .build()
 
         val requestPermissionLauncher =
@@ -55,6 +68,7 @@ class FoodScanner : AppCompatActivity() {
                 if (isGranted) {
                     // Permission is granted. Continue the action or workflow in your
                     // app.
+                    startCameraSource()
                 } else {
                     barcodeInfo!!.text = getString(R.string.scanning_requires_camera_permission)
                 }
@@ -73,11 +87,6 @@ class FoodScanner : AppCompatActivity() {
                     }
                     ActivityCompat.shouldShowRequestPermissionRationale(
                         this@FoodScanner, Manifest.permission.CAMERA) -> {
-                        // In an educational UI, explain to the user why your app requires this
-                        // permission for a specific feature to behave as expected, and what
-                        // features are disabled if it's declined. In this UI, include a
-                        // "cancel" or "no thanks" button that lets the user continue
-                        // using your app without granting the permission.
 
                     }
                     else -> {
@@ -109,15 +118,61 @@ class FoodScanner : AppCompatActivity() {
 
             override fun receiveDetections(detections: Detector.Detections<Barcode?>) {
                 val barcodes: SparseArray<Barcode?> = detections.detectedItems
+                if (barcodes.size() != 0 && readyToDetect) {
+                    readyToDetect = false
+                    barcodeInfo!!.post {
+                        Log.d(
+                            "FoodScanner",
+                            "Barcode detected: ${barcodes.valueAt(0)?.displayValue}"
+                        )
+                        val barcodeValue = barcodes.valueAt(0)?.displayValue ?: "No Value"
+                        barcodeInfo!!.text = barcodeValue
+                        if (!barcodeList.contains(barcodeValue)) {
+                            val builder: AlertDialog.Builder = AlertDialog.Builder(this@FoodScanner)
+                            builder
+                                .setTitle("Do you want to add $barcodeValue to the List?")
+                                .setPositiveButton("Yes") { dialog, which ->
+                                    barcodeList.add(barcodeValue)
+                                    barcodeAdapter.notifyItemInserted(barcodeList.size - 1)
+                                    readyToDetect = true
+                                }
+                                .setNegativeButton("No") { dialog, which ->
+                                    readyToDetect = true
+                                }
+                            val dialog: AlertDialog = builder.create()
+                            dialog.show()
+                        } else {
+                            val alertDialog = AlertDialog.Builder(this@FoodScanner).create()
+                            alertDialog.setTitle("Item already in List")
+                            alertDialog.setMessage("You have already scanned that item")
+                            alertDialog.setButton(
+                                AlertDialog.BUTTON_NEUTRAL, "OK"
+                            ) { dialog, which ->
+                                dialog.dismiss()
+                                readyToDetect = true
+                            }
+                            alertDialog.show()
+                        }
 
-                if (barcodes.size() != 0) {
-                    barcodeInfo!!.post(Runnable
-                    // Use the post method of the TextView
-                    {
-                        barcodeInfo!!.text = barcodes.valueAt(0)?.displayValue ?: "No Value"
-                    })
+                    }
                 }
             }
         })
+    }
+    private fun startCameraSource() {
+        try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                return
+            }
+            cameraSource?.start(cameraView?.holder)
+            Log.d("FoodScanner", "Camera source started.")
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Log.e("FoodScanner", "Error starting camera source.", e)
+        }
+    }
+
+    fun processBarcode(view: View) {
+
     }
 }
