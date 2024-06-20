@@ -20,8 +20,8 @@ class GroceriesOperationsActivity : AppCompatActivity() {
         // Set click listeners for the buttons
         btnHinzufugen.setOnClickListener {
             // zu QR Scanning
-            //val intent = Intent(this, QrCodeScannerActivity::class.java)
-            //startActivity(intent)
+            val intent = Intent(this, FoodScanner::class.java)
+            startActivity(intent)
         }
 
         btnLoschen.setOnClickListener {
