@@ -91,6 +91,9 @@ dependencies {
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    //adds an await function to Call from okhttp
+    implementation("ru.gildor.coroutines:kotlin-coroutines-okhttp:1.0")
 }
 
 fun getBearerToken(): String {
