@@ -82,6 +82,18 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Mario Start:
+
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.8.0")
+    implementation("androidx.compose.ui:ui:1.3.3")
+    implementation("androidx.compose.material:material:1.3.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.3.3")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+    implementation("androidx.activity:activity-compose:1.6.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui")
     // preview
@@ -91,6 +103,13 @@ dependencies {
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("androidx.compose.material:material-icons-core:1.3.1")
+    implementation("androidx.compose.material:material-icons-extended:1.3.1")
+    implementation("androidx.navigation:navigation-compose:2.4.0")
+
+    // Mario End
+
+
 
     //adds an await function to Call from okhttp
     implementation("ru.gildor.coroutines:kotlin-coroutines-okhttp:1.0")
