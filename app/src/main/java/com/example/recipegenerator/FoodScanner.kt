@@ -2,6 +2,7 @@ package com.example.recipegenerator
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -19,11 +20,17 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import com.example.recipegenerator.http.BarcodeHttpCoroutineWorker
 import com.google.android.gms.vision.CameraSource
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
 import java.io.IOException
+import java.util.ArrayList
 
 
 class FoodScanner : AppCompatActivity() {
@@ -32,7 +39,7 @@ class FoodScanner : AppCompatActivity() {
     var cameraSource: CameraSource? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var barcodeAdapter: BarcodeAdapter
-    private val barcodeList = mutableListOf<String>()
+    private val itemList = mutableListOf<GroceryItem>()
     private var readyToDetect = true;
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +56,7 @@ class FoodScanner : AppCompatActivity() {
         recyclerView = findViewById<View>(R.id.recyclerView) as RecyclerView
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        barcodeAdapter = BarcodeAdapter(barcodeList)
+        barcodeAdapter = BarcodeAdapter(itemList)
         recyclerView.adapter = barcodeAdapter
 
         val barcodeDetector: BarcodeDetector =
@@ -85,15 +92,19 @@ class FoodScanner : AppCompatActivity() {
 
                         cameraSource?.start(cameraView!!.holder)
                     }
+
                     ActivityCompat.shouldShowRequestPermissionRationale(
-                        this@FoodScanner, Manifest.permission.CAMERA) -> {
+                        this@FoodScanner, Manifest.permission.CAMERA
+                    ) -> {
 
                     }
+
                     else -> {
                         // You can directly ask for the permission.
                         // The registered ActivityResultCallback gets the result of this request.
                         requestPermissionLauncher.launch(
-                            Manifest.permission.CAMERA)
+                            Manifest.permission.CAMERA
+                        )
                     }
                 }
             }
@@ -117,6 +128,8 @@ class FoodScanner : AppCompatActivity() {
             }
 
             override fun receiveDetections(detections: Detector.Detections<Barcode?>) {
+                var responseTextView = ""
+                var success = false
                 val barcodes: SparseArray<Barcode?> = detections.detectedItems
                 if (barcodes.size() != 0 && readyToDetect) {
                     readyToDetect = false
@@ -127,41 +140,73 @@ class FoodScanner : AppCompatActivity() {
                         )
                         val barcodeValue = barcodes.valueAt(0)?.displayValue ?: "No Value"
                         barcodeInfo!!.text = barcodeValue
-                        if (!barcodeList.contains(barcodeValue)) {
-                            val builder: AlertDialog.Builder = AlertDialog.Builder(this@FoodScanner)
-                            builder
-                                .setTitle("Do you want to add $barcodeValue to the List?")
-                                .setPositiveButton("Yes") { dialog, which ->
-                                    barcodeList.add(barcodeValue)
-                                    barcodeAdapter.notifyItemInserted(barcodeList.size - 1)
-                                    readyToDetect = true
+                        val inputData = Data.Builder()
+                            .putString("barcode", barcodeValue)
+                            .build()
+
+                        val workRequest = OneTimeWorkRequestBuilder<BarcodeHttpCoroutineWorker>()
+                            .setInputData(inputData)
+                            .build()
+
+                        WorkManager.getInstance(this@FoodScanner).enqueue(workRequest)
+
+                        WorkManager.getInstance(this@FoodScanner)
+                            .getWorkInfoByIdLiveData(workRequest.id)
+                            .observe(this@FoodScanner) { workInfo ->
+                                if (workInfo != null && workInfo.state.isFinished) {
+                                    if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+                                        success = true;
+                                        val title = workInfo.outputData.getString("title")
+                                        val category = workInfo.outputData.getString("category")
+                                        val weight = workInfo.outputData.getString("weight")
+                                        val builder: AlertDialog.Builder =
+                                            AlertDialog.Builder(this@FoodScanner)
+                                        builder
+                                            .setTitle("Do you want to add $barcodeValue to the List?")
+                                            .setPositiveButton("Yes") { dialog, which ->
+                                                itemList.add(GroceryItem("$title, $category, $weight"))
+                                                barcodeAdapter.notifyItemInserted(itemList.size - 1)
+                                                readyToDetect = true
+                                            }
+                                            .setNegativeButton("No") { dialog, which ->
+                                                readyToDetect = true
+                                            }
+                                        val dialog: AlertDialog = builder.create()
+                                        dialog.show()
+
+                                        // Hier die Antwortdaten verarbeiten
+                                        responseTextView =
+                                            "Title: $title\nCategory: $category\nWeight: $weight"
+                                    } else if (workInfo.state == WorkInfo.State.FAILED) {
+                                        val alertDialog =
+                                            AlertDialog.Builder(this@FoodScanner).create()
+                                        alertDialog.setTitle("Product is unknown")
+                                        alertDialog.setMessage("The Product with the barcode $barcodeValue is unknown")
+                                        alertDialog.setButton(
+                                            AlertDialog.BUTTON_NEUTRAL, "OK"
+                                        ) { dialog, which ->
+                                            dialog.dismiss()
+                                            readyToDetect = true
+                                        }
+                                        alertDialog.show()
+                                    }
                                 }
-                                .setNegativeButton("No") { dialog, which ->
-                                    readyToDetect = true
-                                }
-                            val dialog: AlertDialog = builder.create()
-                            dialog.show()
-                        } else {
-                            val alertDialog = AlertDialog.Builder(this@FoodScanner).create()
-                            alertDialog.setTitle("Item already in List")
-                            alertDialog.setMessage("You have already scanned that item")
-                            alertDialog.setButton(
-                                AlertDialog.BUTTON_NEUTRAL, "OK"
-                            ) { dialog, which ->
-                                dialog.dismiss()
-                                readyToDetect = true
                             }
-                            alertDialog.show()
-                        }
 
                     }
                 }
             }
+
         })
     }
+
     private fun startCameraSource() {
         try {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.CAMERA
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 return
             }
             cameraSource?.start(cameraView?.holder)
@@ -172,7 +217,12 @@ class FoodScanner : AppCompatActivity() {
         }
     }
 
-    fun processBarcode(view: View) {
-
+    fun submitList(view: View) {
+        var items = ArrayList<GroceryItem>()
+        items.addAll(itemList)
+        val resultIntent = Intent()
+        resultIntent.putParcelableArrayListExtra("items", items)
+        setResult(RESULT_OK, resultIntent)
+        finish()
     }
 }

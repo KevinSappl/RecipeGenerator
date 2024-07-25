@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class BarcodeAdapter(private val barcodeList: MutableList<String>) :
+class BarcodeAdapter(private val barcodeList: MutableList<GroceryItem>) :
     RecyclerView.Adapter<BarcodeAdapter.BarcodeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BarcodeViewHolder {
@@ -16,7 +16,7 @@ class BarcodeAdapter(private val barcodeList: MutableList<String>) :
     }
 
     override fun onBindViewHolder(holder: BarcodeViewHolder, position: Int) {
-        holder.barcodeValue.text = barcodeList[position]
+        holder.barcodeValue.text = barcodeList[position].toString()
     }
 
     override fun getItemCount(): Int {
