@@ -4,10 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.*
 
 
 class GroceriesOperationsActivity : AppCompatActivity() {
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,17 +22,34 @@ class GroceriesOperationsActivity : AppCompatActivity() {
 
         // Set click listeners for the buttons
         btnHinzufugen.setOnClickListener {
-            // zu QR Scanning
-            val intent = Intent(this, FoodScanner::class.java)
-            startActivity(intent)
+            coroutineScope.launch {
+
+                withContext(Dispatchers.Default) {
+                    val intent = Intent(this@GroceriesOperationsActivity, FoodScanner::class.java)
+                    startActivity(intent)
+                }
+            }
         }
 
         btnLoschen.setOnClickListener {
-            // Handle the click for Löschen button
-            Log.d("RecipesOperationsActivity", "Loschen button clicked")
-            val intent = Intent(this, GroceriesListActivity::class.java)
-            startActivity(intent)
+            coroutineScope.launch {
+
+                withContext(Dispatchers.Default) {
+                    Log.d("GroceriesOperationsActivity", "Loschen button clicked")
+                    runOnUiThread {
+                        Toast.makeText(this@GroceriesOperationsActivity, "Loschen button clicked", Toast.LENGTH_LONG).show()
+                    }
+                    val intent = Intent(this@GroceriesOperationsActivity, GroceriesListActivity::class.java)
+                    startActivity(intent)
+                }
+            }
         }
 
+
+
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineScope.cancel()
     }
 }

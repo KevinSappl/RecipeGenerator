@@ -120,6 +120,9 @@ dependencies {
 
     //adds an await function to Call from okhttp
     implementation("ru.gildor.coroutines:kotlin-coroutines-okhttp:1.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
 }
 
 fun getBearerToken(): String {
