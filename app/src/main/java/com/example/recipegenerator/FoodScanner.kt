@@ -29,6 +29,15 @@ import com.google.android.gms.vision.CameraSource
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
 import java.io.IOException
 import java.util.ArrayList
 
@@ -40,7 +49,10 @@ class FoodScanner : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var barcodeAdapter: BarcodeAdapter
     private val itemList = mutableListOf<GroceryItem>()
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
     private var readyToDetect = true;
+
+    private lateinit var groceriesFile: File
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +70,9 @@ class FoodScanner : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         barcodeAdapter = BarcodeAdapter(itemList)
         recyclerView.adapter = barcodeAdapter
+
+
+        groceriesFile = File(filesDir, "groceries.json")
 
         val barcodeDetector: BarcodeDetector =
             BarcodeDetector.Builder(this@FoodScanner)
@@ -165,8 +180,10 @@ class FoodScanner : AppCompatActivity() {
                                             .setTitle("Do you want to add $barcodeValue to the List?")
                                             .setPositiveButton("Yes") { dialog, which ->
                                                 itemList.add(GroceryItem("$title, $category, $weight"))
+                                                val groceryItem = GroceryItem("$title, $category, $weight") //ist wiederholt, muss in eine liste gespeichert werden
                                                 barcodeAdapter.notifyItemInserted(itemList.size - 1)
                                                 readyToDetect = true
+                                                saveGroceryItemToFile(groceryItem)
                                             }
                                             .setNegativeButton("No") { dialog, which ->
                                                 readyToDetect = true
@@ -198,6 +215,23 @@ class FoodScanner : AppCompatActivity() {
             }
 
         })
+    }
+    private fun saveGroceryItemToFile(groceryItem: GroceryItem) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val groceryListType = object : TypeToken<MutableList<GroceryItem>>() {}.type
+            val currentItems: MutableList<GroceryItem> = if (groceriesFile.exists()) {
+                val reader = FileReader(groceriesFile)
+                val items: MutableList<GroceryItem> = Gson().fromJson(reader, groceryListType)
+                reader.close()
+                items
+            } else {
+                mutableListOf()
+            }
+            currentItems.add(groceryItem)
+            val writer = FileWriter(groceriesFile)
+            Gson().toJson(currentItems, writer)
+            writer.close()
+        }
     }
 
     private fun startCameraSource() {
