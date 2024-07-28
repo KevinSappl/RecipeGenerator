@@ -1,18 +1,30 @@
 package com.example.recipegenerator
 
-import androidx.lifecycle.ViewModel
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
-class ShoppingListViewModel : ViewModel()  {
-    private var itemId = 0
-    val shoppingItems = mutableStateListOf<ShoppingItem>()
+class ShoppingListViewModel(application: Application) : AndroidViewModel(application) {
+    private val shoppingItemDao: ShoppingItemDao
+    val shoppingItems: LiveData<List<ShoppingItem>>
+
+    init {
+        val database = ShoppingListDatabase.getDatabase(application)
+        shoppingItemDao = database.shoppingItemDao()
+        shoppingItems = shoppingItemDao.getAll()
+    }
 
     fun addItem(name: String, quantity: String, details: String = "") {
-        shoppingItems.add(ShoppingItem(id = itemId++, name = name, quantity = quantity, details = details))
+        viewModelScope.launch {
+            shoppingItemDao.insert(ShoppingItem(name = name, quantity = quantity, details = details))
+        }
     }
 
     fun removeItem(item: ShoppingItem) {
-        shoppingItems.remove(item)
+        viewModelScope.launch {
+            shoppingItemDao.delete(item)
+        }
     }
 }

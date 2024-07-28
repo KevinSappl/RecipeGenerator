@@ -38,6 +38,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.livedata.observeAsState
+
 
 
 
@@ -59,10 +61,11 @@ fun ShoppingListApp(viewModel: ShoppingListViewModel = viewModel()) {
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
     var showDialog by remember { mutableStateOf(false) }
 
+    val shoppingItems by viewModel.shoppingItems.observeAsState(emptyList())
 
-    val filteredItems = remember(viewModel.shoppingItems) {         // item filtering in Search
+    val filteredItems = remember(shoppingItems, searchQuery) {          // item filtering in Search
         derivedStateOf {
-            viewModel.shoppingItems.filter {
+            shoppingItems.filter {
                 it.name.contains(searchQuery.text, ignoreCase = true)
             }
         }
@@ -74,23 +77,21 @@ fun ShoppingListApp(viewModel: ShoppingListViewModel = viewModel()) {
             onAddItem = { name, quantity ->
                 viewModel.addItem(name, quantity)
                 showDialog = false
-
             }
         )
     }
 
-    Scaffold( modifier = Modifier.padding(top = 40.dp),
+    Scaffold(
+        modifier = Modifier.padding(top = 40.dp),
         topBar = {
             TopAppBar(
                 title = { Text("Shopping List") },
-
                 actions = {
                     TextField(          // Search Field
                         value = searchQuery,
                         onValueChange = { searchQuery = it },
                         placeholder = { Text("Search", color = Color.White) },
                         modifier = Modifier.fillMaxWidth()
-
                     )
                 }
             )
@@ -99,22 +100,15 @@ fun ShoppingListApp(viewModel: ShoppingListViewModel = viewModel()) {
 
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
                 FloatingActionButton(
-                    onClick = {
-                        showDialog = true
-
-                    },
-
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-
-
+                    onClick = { showDialog = true },
+                    modifier = Modifier.align(Alignment.BottomEnd)
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add Item")
                 }
             }
         },
         content = {
-            if (filteredItems.isEmpty()) {          // If no items available, show text
+            if (filteredItems.isEmpty()) {      // If no items available, show text
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -130,7 +124,7 @@ fun ShoppingListApp(viewModel: ShoppingListViewModel = viewModel()) {
                     }
                 }
             } else {
-                ShoppingList(       // items zeigen.
+                ShoppingList(                   // items zeigen.
                     items = filteredItems,
                     onItemClick = { /* Navigate to details screen. Probably wont implement that. */ },
                     onItemDelete = { item ->
@@ -150,7 +144,6 @@ fun AddItemDialog(onDismiss: () -> Unit, onAddItem: (String, String) -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Add new item") },
-
         text = {
             Column {
                 Spacer(modifier = Modifier.height(16.dp))
@@ -167,7 +160,6 @@ fun AddItemDialog(onDismiss: () -> Unit, onAddItem: (String, String) -> Unit) {
                 )
             }
         },
-
         confirmButton = {
             Button(
                 onClick = {
@@ -177,7 +169,6 @@ fun AddItemDialog(onDismiss: () -> Unit, onAddItem: (String, String) -> Unit) {
                 Text("Add", color = Color.White)
             }
         },
-
         dismissButton = {
             Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)) {
                 Text("Cancel", color = Color.White)
@@ -185,8 +176,6 @@ fun AddItemDialog(onDismiss: () -> Unit, onAddItem: (String, String) -> Unit) {
         }
     )
 }
-
-
 
 @Composable
 fun ShoppingList(

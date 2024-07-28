@@ -59,6 +59,7 @@ android {
 dependencies {
 
     implementation(libs.room)
+    implementation(libs.androidx.runtime.livedata)
     annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
@@ -114,6 +115,16 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.3.1")
     implementation("androidx.navigation:navigation-compose:2.4.0")
 
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0")
+    implementation("androidx.activity:activity-compose:1.7.0")
+    implementation("androidx.compose.material3:material3:1.0.0")
+    implementation("androidx.compose.material3:material3:1.0.0")
+    implementation("androidx.compose.ui:ui:1.4.3")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
+
+    implementation("androidx.compose.runtime:runtime:1.0.5")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07")
+    // probably don't need all of that anymore, but i am too scared to delete something. ~ Mario
     // Mario End
 
 
