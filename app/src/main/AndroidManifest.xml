@@ -29,6 +29,9 @@
         <activity android:name=".FoodScanner" android:exported="true"/>
         <activity android:name=".GroceriesListActivity" android:exported="true"/>
         <activity android:name=".GroceriesOperationsActivity" android:exported="true"/>
+        <activity android:name=".MainMenuActivity" android:exported="true"/>
+        <activity android:name=".RecipeDetailActivity" android:exported="true"/>
+
     </application>
 
 </manifest>

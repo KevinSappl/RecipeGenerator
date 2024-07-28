@@ -11,7 +11,7 @@
         android:paddingBottom="8dp">
 
         <TextView
-            android:id="@+id/tvRecipeTitle"
+            android:id="@+id/recipeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="RecipeName"
@@ -62,7 +62,7 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/tvInstructionsTitle"
+                android:id="@+id/instructionsTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Zubereitung:"
@@ -72,7 +72,7 @@
                 android:paddingBottom="4dp" />
 
             <TextView
-                android:id="@+id/tvInstructions"
+                android:id="@+id/instructions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
