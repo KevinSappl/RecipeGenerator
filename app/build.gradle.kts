@@ -124,6 +124,7 @@ dependencies {
 
     implementation("androidx.compose.runtime:runtime:1.0.5")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07")
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha10")
     // probably don't need all of that anymore, but i am too scared to delete something. ~ Mario
     // Mario End
 

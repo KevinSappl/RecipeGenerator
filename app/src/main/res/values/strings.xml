@@ -6,4 +6,5 @@
     <string name="del_grocery">Löschen</string>
     <string name="scanning_requires_camera_permission">Scanning requires camera permission</string>
     <string name="title_activity_shopping_list">ShoppingList</string>
+    <string name="title_activity_favourites">Favourites</string>
 </resources>
