@@ -16,6 +16,7 @@ import android.annotation.SuppressLint
 
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -40,6 +41,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.livedata.observeAsState
 
+import androidx.compose.ui.graphics.Brush
+import com.example.recipegenerator.ui.theme.Pink
+import com.example.recipegenerator.ui.theme.Orange
+import com.example.recipegenerator.ui.theme.PinkOrangeHorizontalGradient
 
 
 
@@ -86,12 +91,17 @@ fun ShoppingListApp(viewModel: ShoppingListViewModel = viewModel()) {
         topBar = {
             TopAppBar(
                 title = { Text("Shopping List") },
+                backgroundColor = Color.Transparent,
+                contentColor = Color.White,
+                modifier = Modifier.background(PinkOrangeHorizontalGradient),
                 actions = {
-                    TextField(          // Search Field
+                    TextField( // Search Field
                         value = searchQuery,
                         onValueChange = { searchQuery = it },
                         placeholder = { Text("Search", color = Color.White) },
                         modifier = Modifier.fillMaxWidth()
+                            .background(PinkOrangeHorizontalGradient)
+
                     )
                 }
             )
@@ -101,7 +111,12 @@ fun ShoppingListApp(viewModel: ShoppingListViewModel = viewModel()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
                 FloatingActionButton(
                     onClick = { showDialog = true },
-                    modifier = Modifier.align(Alignment.BottomEnd)
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                    backgroundColor = Color(0xFFF89829),
+                    contentColor = Color.White,
+
+
+
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add Item")
                 }
@@ -164,7 +179,8 @@ fun AddItemDialog(onDismiss: () -> Unit, onAddItem: (String, String) -> Unit) {
             Button(
                 onClick = {
                     onAddItem(itemName, itemQuantity)
-                }
+                }, colors = ButtonDefaults.buttonColors(backgroundColor = Orange)
+
             ) {
                 Text("Add", color = Color.White)
             }
