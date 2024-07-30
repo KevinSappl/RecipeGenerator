@@ -48,6 +48,8 @@ import androidx.compose.ui.graphics.Brush
 import com.example.recipegenerator.ui.theme.Pink
 import com.example.recipegenerator.ui.theme.Orange
 import com.example.recipegenerator.ui.theme.PinkOrangeHorizontalGradient
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 
 class Favourites : ComponentActivity() {
@@ -184,13 +186,16 @@ fun RecipeDetailsScreen(recipe: Recipe) {
             )
         },
         content = { paddingValues ->
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
                     .padding(16.dp)
+                    .verticalScroll(rememberScrollState()) // Couldn't scroll down without this ._.
             ) {
-                Text(text = "Details: ${recipe.details}")
+                Column {
+                    Text(text = " ${recipe.details}")
+                }
             }
         }
     )

@@ -36,8 +36,6 @@ import com.example.recipegenerator.ui.theme.PinkOrangeHorizontalGradient
                         contentColor = Color.White,
                         modifier = Modifier
                             .background(PinkOrangeHorizontalGradient)
-
-
                     )
 
  */
