@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 // AI start (just sample Data, bc i didn't want to setup the AI
 
-
+/*
 val sampleRecipes = listOf(
     Recipe(1, "Scrambled Eggs", "Sure! Here's a simple and delicious recipe for scrambled eggs:\n" +
             "\n" +
@@ -64,7 +64,7 @@ Recipe(15, "Vegetable Stir-Fry", "Healthy and colorful stir-fry with various veg
 
 )
 // AI end
-
+*/
 
 
 
@@ -81,12 +81,12 @@ class FavouriteViewModel(application: Application) : AndroidViewModel(applicatio
 
     private fun loadFavouriteRecipes() {
         viewModelScope.launch {
-
+/*
             (favouriteRecipes as MutableLiveData).postValue(sampleRecipes)      // sample Data
-            /*
+            */
 
             (favouriteRecipes as MutableLiveData).postValue(recipeDao.getFavourites())      // actual Data.
-*/
+
 
         }
     }
