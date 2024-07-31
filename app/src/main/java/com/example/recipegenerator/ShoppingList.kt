@@ -14,13 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.recipegenerator.ui.theme.RecipeGeneratorTheme
 import android.annotation.SuppressLint
 
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
