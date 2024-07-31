@@ -27,9 +27,10 @@ class MainMenuActivity : AppCompatActivity() {
         recipesListView = findViewById(R.id.recipesList)
         btnFoods = findViewById(R.id.btnFoods)
         btnScan = findViewById(R.id.btnScan)
+        btnFavourites = findViewById(R.id.btnFavorites)
 
+        insertDummyData()
 
-        // aufladen Rezepten aus DB
         loadRecipes()
 
         btnFoods.setOnClickListener {
@@ -37,16 +38,16 @@ class MainMenuActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        btnScan.setOnClickListener{
+        btnScan.setOnClickListener {
             val intent = Intent(this, FoodScanner::class.java)
             startActivity(intent)
         }
-        btnFavourites.setOnClickListener{
-            //TODO:Favourites Activity
+
+        btnFavourites.setOnClickListener {
+            // TODO: Реализовать переход к активити "Избранное"
         }
     }
 
-    // RezeptenList dynamisch auffüllen
     private fun loadRecipes() {
         coroutineScope.launch {
             val recipes = withContext(Dispatchers.IO) {
@@ -67,6 +68,20 @@ class MainMenuActivity : AppCompatActivity() {
                 putExtra("recipe_id", selectedRecipe.id)
             }
             startActivity(intent)
+        }
+    }
+
+    private fun insertDummyData() {
+        coroutineScope.launch {
+            withContext(Dispatchers.IO) {
+                val dao = RecipeDB.getDatabase(this@MainMenuActivity).recipeDao()
+                if (dao.getAll().isEmpty()) {
+                    dao.insert(
+                        Recipe(id = 1, name = "Noodles", details = "Ingredients: Noodles\nInstructions: Boil water\nTips: Stir occasionally", favourite = false),
+                        Recipe(id = 2, name = "Wiener Schnitzel", details = "Ingredients: Wiener Schnitzel\nInstructions: Fry it\nTips: Serve with lemon", favourite = true)
+                    )
+                }
+            }
         }
     }
 }

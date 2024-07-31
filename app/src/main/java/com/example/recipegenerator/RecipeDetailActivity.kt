@@ -1,5 +1,6 @@
 package com.example.recipegenerator
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -18,6 +19,7 @@ class RecipeDetailActivity : AppCompatActivity() {
     private lateinit var instructionsView: TextView
     private lateinit var btnEditRecipe: Button
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    private var currentRecipeId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,13 +30,17 @@ class RecipeDetailActivity : AppCompatActivity() {
         instructionsView = findViewById(R.id.instructions)
         btnEditRecipe = findViewById(R.id.btnEditRecipe)
 
-        val recipeId = intent.getIntExtra("recipe_id", -1)
-        if (recipeId != -1) {
-            loadRecipe(recipeId)
+
+        currentRecipeId = intent.getIntExtra("recipe_id", -1)
+        if (currentRecipeId != -1) {
+            loadRecipe(currentRecipeId)
         }
 
         btnEditRecipe.setOnClickListener {
-            //TODO: Edit recipe e.g. through pop-up window
+            val intent = Intent(this, EditRecipeActivity::class.java).apply {
+                putExtra("recipe_id", currentRecipeId)
+            }
+            startActivity(intent)
         }
     }
 
@@ -53,4 +59,7 @@ class RecipeDetailActivity : AppCompatActivity() {
             instructionsView.text = it.details
         }
     }
+
+
 }
+
