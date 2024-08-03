@@ -14,18 +14,19 @@ object RecipeGenerator {
     private val forceToUseAllIngredientsRequest ="\nYou have to use all ingredients."
 
     private val formatRequest = ". Please format the recipe in the following way:\n" +
+            "**Name of Recipe**\n" +
             "Ingredients\n" +
             "Needed cooking utensils\n" +
             "Instructions\n" +
             "Cooking Tips\n" +
             "Macros\n";
 
-    fun generateRecipe(ingredients: String, useAllIngredients: Boolean): String {
+    fun generateRecipe(ingredients: String, useAllIngredients: Boolean): Recipe {
         val recipeGenerationPrompt: String = generateRecipeGenerationPrompt(ingredients, useAllIngredients)
 
         Recipe(name = "", details = "", favourite = false )
 
-        return llmAPI.getResponse(recipeGenerationPrompt);
+        return turnResponseIntoRecipe(llmAPI.getResponse(recipeGenerationPrompt));
     }
 
     private fun generateRecipeGenerationPrompt(ingredients: String, useAllIngredients: Boolean): String{
@@ -35,5 +36,14 @@ object RecipeGenerator {
                 if(useAllIngredients) forceToUseAllIngredientsRequest else freeToChooseIngredientsRequest
 
     }
+
+    private fun turnResponseIntoRecipe(toRecipe: String): Recipe {
+        val substring = toRecipe.substringAfter("**")
+        val nameOfRecipe = substring.substringBefore("**");
+        val detailsOfRecipe = substring.substringAfter("**")
+
+        return Recipe(name = nameOfRecipe, details = detailsOfRecipe, favourite = false);
+    }
+
 
 }
