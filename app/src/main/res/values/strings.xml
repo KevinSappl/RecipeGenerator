@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">RecipeGenerator</string>
     <string name="recipe_generator_logo">Recipe Generator Logo</string>
-    <string name="add_recipe_btn">Hinzufügen</string>
-    <string name="del_recipe_btn">Löschen</string>
-    <string name="del_grocery">Löschen</string>
+    <string name="add_grocery_btn">Hinzufügen</string>
+    <string name="gen_recipe_btn">Rezept generieren</string>
     <string name="scanning_requires_camera_permission">Scanning requires camera permission</string>
     <string name="title_activity_shopping_list">ShoppingList</string>
     <string name="title_activity_favourites">Favourites</string>
+    <string name="edit">Edit</string>
+    <string name="recipename">RecipeName</string>
 </resources>

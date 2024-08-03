@@ -9,10 +9,13 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class GroceryAdapter(private var groceries: MutableList<GroceryItem>, private val onDelete: (GroceryItem) -> Unit) : RecyclerView.Adapter<GroceryAdapter.GroceryViewHolder>(),
-    Filterable {
+class GroceryAdapter(
+    private var groceries: MutableList<GroceryItem>,
+    private val onDelete: (GroceryItem) -> Unit
+) : RecyclerView.Adapter<GroceryAdapter.GroceryViewHolder>(), Filterable {
 
     private var filteredGroceries: MutableList<GroceryItem> = groceries
+    private val selectedItems = mutableSetOf<GroceryItem>()
 
     class GroceryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView = view.findViewById(R.id.groceryName)
@@ -30,6 +33,25 @@ class GroceryAdapter(private var groceries: MutableList<GroceryItem>, private va
         holder.deleteButton.setOnClickListener {
             onDelete(grocery)
         }
+
+        holder.itemView.setOnClickListener {
+            if (selectedItems.contains(grocery)) {
+                selectedItems.remove(grocery)
+            } else {
+                selectedItems.add(grocery)
+            }
+            notifyItemChanged(position)
+        }
+
+        holder.itemView.setBackgroundColor(
+            if (selectedItems.contains(grocery)) {
+                // Highlight color for selected items
+                holder.itemView.context.getColor(R.color.colorSecondary)
+            } else {
+                // Default background color
+                holder.itemView.context.getColor(android.R.color.transparent)
+            }
+        )
     }
 
     override fun getItemCount(): Int {
@@ -63,5 +85,9 @@ class GroceryAdapter(private var groceries: MutableList<GroceryItem>, private va
         groceries = newGroceries
         filteredGroceries = newGroceries
         notifyDataSetChanged()
+    }
+
+    fun getSelectedItems(): List<GroceryItem> {
+        return selectedItems.toList()
     }
 }

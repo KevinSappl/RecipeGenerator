@@ -15,7 +15,6 @@ import kotlinx.coroutines.withContext
 class RecipeDetailActivity : AppCompatActivity() {
 
     private lateinit var recipeTitleView: TextView
-    private lateinit var ingredientsView: TextView
     private lateinit var instructionsView: TextView
     private lateinit var btnEditRecipe: Button
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
@@ -26,7 +25,6 @@ class RecipeDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_recipe_details)
 
         recipeTitleView = findViewById(R.id.recipeTitle)
-        ingredientsView = findViewById(R.id.ingridients)
         instructionsView = findViewById(R.id.instructions)
         btnEditRecipe = findViewById(R.id.btnEditRecipe)
 
