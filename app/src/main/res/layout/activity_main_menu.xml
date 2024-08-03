@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".MainMenuActivity"
+    android:background="@color/colorBackground">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:background="#D3D3D3">
+        android:background="@color/colorPrimary">
 
         <TextView
             android:id="@+id/headerLogo"
@@ -17,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="Recipe Generator"
             android:textSize="24sp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/colorOnPrimary"
             android:layout_centerVertical="true" />
 
         <ImageButton
@@ -27,6 +28,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@null"
+            android:tint="@color/colorOnPrimary"
             android:src="@android:drawable/ic_menu_more" />
     </RelativeLayout>
 
@@ -35,14 +37,15 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp" />
+        android:divider="@color/colorOnSurface"
+        android:dividerHeight="1dp"
+        android:background="@color/colorSurface" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#D3D3D3"
+        android:background="@color/colorPrimary"
         android:padding="8dp"
         android:gravity="center">
 
@@ -52,8 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Lebensmittel"
-            android:textColor="#FFFFFF"
-            android:background="#757575" />
+            android:textColor="@color/colorOnPrimary"
+            android:background="@color/colorSecondary" />
 
         <Button
             android:id="@+id/btnScan"
@@ -61,8 +64,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="SCAN"
-            android:textColor="#FFFFFF"
-            android:background="#757575" />
+            android:textColor="@color/colorOnPrimary"
+            android:background="@color/colorSecondary" />
 
         <Button
             android:id="@+id/btnFavorites"
@@ -70,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Favoriten"
-            android:textColor="#FFFFFF"
-            android:background="#757575" />
+            android:textColor="@color/colorOnPrimary"
+            android:background="@color/colorSecondary" />
     </LinearLayout>
 </LinearLayout>

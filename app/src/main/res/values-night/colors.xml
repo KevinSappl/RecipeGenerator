@@ -6,9 +6,9 @@
     <color name="colorSecondary">#4CAF50</color> <!-- Fresh green -->
     <color name="colorOnSecondary">#FFFFFF</color> <!-- White -->
 
-    <color name="colorBackground">#FFFFFF</color> <!-- Light background -->
-    <color name="colorOnBackground">#000000</color> <!-- Black -->
+    <color name="colorBackground">#121212</color> <!-- Very dark grey -->
+    <color name="colorOnBackground">#FFFFFF</color> <!-- White -->
 
-    <color name="colorSurface">#F5F5F5</color> <!-- Light grey -->
-    <color name="colorOnSurface">#000000</color> <!-- Black -->
+    <color name="colorSurface">#1E1E1E</color> <!-- Slightly lighter grey -->
+    <color name="colorOnSurface">#FFFFFF</color> <!-- White -->
 </resources>
