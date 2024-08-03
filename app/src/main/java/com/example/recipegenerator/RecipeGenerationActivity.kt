@@ -114,7 +114,7 @@ fun RecipeGeneration(groceries: MutableList<GroceryItem>) {
                             Text(
                                 text = AnnotatedString(
                                     "This will force the AI to use all ingredients, " +
-                                            "Even if they do not fit together. Use at your own risk.",
+                                            "even if they do not fit together. Use at your own risk.",
                                     spanStyles = listOf(
                                         AnnotatedString.Range(
                                             SpanStyle(fontWeight = FontWeight.Bold),
