@@ -5,19 +5,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.rounded.SmartToy
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -35,7 +34,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -82,10 +80,9 @@ fun RecipeGeneration(groceries: MutableList<GroceryItem>) {
                 modifier = Modifier.padding(top = 20.dp),
                 topBar = {
                     TopAppBar(
-                        title = { Text(text = "Generate Recipe") },
+                        title = { Text(text = "Generate Recipe", color = Color.White) },
                         modifier = Modifier.background(PinkOrangeHorizontalGradient),
                         backgroundColor = Color.Transparent,
-                        contentColor = Color.White
                     )
                 },
                 bottomBar = {
@@ -109,7 +106,8 @@ fun RecipeGeneration(groceries: MutableList<GroceryItem>) {
                                 colors = SwitchDefaults.colors(
                                     checkedTrackColor = Pink,
                                     checkedThumbColor = Orange
-                                )
+                                ),
+                                modifier = Modifier.padding(horizontal = 5.dp)
                             )
 
 
@@ -230,7 +228,7 @@ fun RecipeDetails(recipe: Recipe) {
             .onSizeChanged { size ->
                 borderVerticalWidth = size.width / 10f;
             },
-        backgroundColor = Color.Transparent)
+        containerColor = Color.Transparent)
     { innerPadding ->
         Column(
             Modifier
@@ -241,7 +239,8 @@ fun RecipeDetails(recipe: Recipe) {
                     bottom = (borderVerticalWidth / 2 / LocalDensity.current.density).dp
                 )
         ) {
-            Text(text = recipe.details, modifier = Modifier.padding(horizontal = 5.dp))
+            Text(text = recipe.details, modifier = Modifier.padding(horizontal = 5.dp),
+                fontSize = 14.sp)
         }
 
     }
