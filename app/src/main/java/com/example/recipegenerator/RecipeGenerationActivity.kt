@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
@@ -17,11 +18,14 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.StarRate
+import androidx.compose.material.icons.outlined.StarRate
 import androidx.compose.material.icons.rounded.SmartToy
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,7 +38,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -45,11 +51,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.recipegenerator.recipeDB.Recipe
+import com.example.recipegenerator.recipeDB.RecipeDB
 import com.example.recipegenerator.recipegenerator.RecipeGenerator
 import com.example.recipegenerator.ui.theme.Orange
 import com.example.recipegenerator.ui.theme.Pink
 import com.example.recipegenerator.ui.theme.PinkOrangeHorizontalGradient
 import com.example.recipegenerator.ui.theme.RecipeGeneratorTheme
+import kotlinx.coroutines.runBlocking
 
 class RecipeGenerationActivity : ComponentActivity() {
 
@@ -191,13 +199,30 @@ fun RecipeDetails(recipe: Recipe) {
     //This state variable is needed to get size of the border rectangles
     //I do not know if there is a better way of doing this.
     var borderVerticalWidth by remember { mutableStateOf(0f) }
+    val context = LocalContext.current
 
     Scaffold(topBar = {
         TopAppBar(
-            title = { Text(text = recipe.name, fontSize = 20.sp, fontWeight = FontWeight.Bold) },
+            title = { Text(text = recipe.name, fontSize = 20.sp, fontWeight = FontWeight.Bold,
+                color = Color.White) },
             modifier = Modifier.background(PinkOrangeHorizontalGradient),
             backgroundColor = Color.Transparent,
-            contentColor = Color.White
+            actions = {
+                IconButton(onClick = {
+                    recipe.favourite = !recipe.favourite
+
+                   runBlocking { RecipeDB.getDatabase(context).recipeDao().update(recipe)};
+                }){
+                    Icon(painter = painterResource(
+                        id = if(recipe.favourite) R.drawable.star_filled_512 else R.drawable.star_512 ),
+                        contentDescription = "Favourite Recipe",
+                        Modifier
+                            .padding(horizontal = 5.dp)
+                            .size(30.dp),
+                        tint = Color.White)
+                }
+            }
+
         )
 
 
@@ -245,18 +270,21 @@ fun RecipeDetails(recipe: Recipe) {
         }
 
     }
+
 }
 
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
     RecipeGeneratorTheme {
-        RecipeGeneration(mutableListOf(
+/*        RecipeGeneration(mutableListOf(
             GroceryItem("Tomatoes"),
             GroceryItem("Potatoes"),
             GroceryItem("Carrots"),
             GroceryItem("Onions"),
             GroceryItem("Garlic")
-        ))
+        ))*/
+        RecipeDetails(recipe = Recipe(1, "Schnitzel",
+            "SHSDIHJAOSIDJASOIDJIOASDJIOSAJD", false))
     }
 }
