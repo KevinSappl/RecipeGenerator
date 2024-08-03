@@ -18,7 +18,7 @@ class GroceriesOperationsActivity : AppCompatActivity() {
 
 
         val btnHinzufugen = findViewById<Button>(R.id.btnHinzufügen)
-        val btnLoschen = findViewById<Button>(R.id.btnLoschen)
+        val btnGroceryOperation = findViewById<Button>(R.id.btnGroceryOperation)
 
         // Set click listeners for the buttons
         btnHinzufugen.setOnClickListener {
@@ -31,7 +31,7 @@ class GroceriesOperationsActivity : AppCompatActivity() {
             }
         }
 
-        btnLoschen.setOnClickListener {
+        btnGroceryOperation.setOnClickListener {
             coroutineScope.launch {
 
                 withContext(Dispatchers.Default) {

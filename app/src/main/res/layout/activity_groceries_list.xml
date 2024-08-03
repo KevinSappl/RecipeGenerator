@@ -9,11 +9,20 @@
         android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorSurface"
         android:queryHint="Search groceries" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
+        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"/>
+
+    <Button
+        android:id="@+id/btnGenerateRecipe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Generate Recipe"
+        android:layout_marginTop="8dp" />
 </LinearLayout>
