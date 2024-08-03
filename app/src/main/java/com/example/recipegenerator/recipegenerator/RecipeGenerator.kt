@@ -1,5 +1,6 @@
 package com.example.recipegenerator.recipegenerator
 
+import com.example.recipegenerator.recipeDB.Recipe
 
 
 object RecipeGenerator {
@@ -21,6 +22,8 @@ object RecipeGenerator {
 
     fun generateRecipe(ingredients: String, useAllIngredients: Boolean): String {
         val recipeGenerationPrompt: String = generateRecipeGenerationPrompt(ingredients, useAllIngredients)
+
+        Recipe(name = "", details = "", favourite = false )
 
         return llmAPI.getResponse(recipeGenerationPrompt);
     }
