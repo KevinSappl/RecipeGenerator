@@ -1,5 +1,6 @@
 package com.example.recipegenerator
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -82,6 +83,7 @@ fun RecipeGeneration(groceries: MutableList<GroceryItem>) {
     //This tutorial helped me a bit: https://www.youtube.com/watch?v=FIEnIBq7Ups
     //And the code in "Favourites.kt"
     val navController = rememberNavController()
+    val context = LocalContext.current;
     NavHost(navController = navController, startDestination = "recipegen") {
         composable("recipegen") {
             Scaffold(
@@ -143,6 +145,9 @@ fun RecipeGeneration(groceries: MutableList<GroceryItem>) {
                     ExtendedFloatingActionButton(onClick =
                     {
                         generatedRecipe = RecipeGenerator.generateRecipe(groceries.toString(), braveMode)
+                        runBlocking { RecipeDB.getDatabase(context).recipeDao().insert(
+                            generatedRecipe!!
+                        )};
                             navController.navigate("generatedRecipe")
                         
                     },
@@ -178,7 +183,8 @@ fun RecipeGeneration(groceries: MutableList<GroceryItem>) {
         }
         
         composable("generatedRecipe"){
-            RecipeDetails(recipe = generatedRecipe!!)
+            val recipe = runBlocking { RecipeDB.getDatabase(context).recipeDao().getByName(generatedRecipe!!.name)};
+            RecipeDetails(recipe = recipe )
         }
     }
 }
