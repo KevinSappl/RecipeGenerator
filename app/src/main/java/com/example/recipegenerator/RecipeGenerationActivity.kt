@@ -80,7 +80,8 @@ fun RecipeGeneration(groceries: MutableList<GroceryItem>) {
                 modifier = Modifier.padding(top = 20.dp),
                 topBar = {
                     TopAppBar(
-                        title = { Text(text = "Generate Recipe", color = Color.White) },
+                        title = { Text(text = "Generate Recipe",
+                            color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold) },
                         modifier = Modifier.background(PinkOrangeHorizontalGradient),
                         backgroundColor = Color.Transparent,
                     )
