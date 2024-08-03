@@ -35,6 +35,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -42,6 +43,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.recipegenerator.recipeDB.Recipe
 import com.example.recipegenerator.recipegenerator.RecipeGenerator
 import com.example.recipegenerator.ui.theme.Orange
@@ -56,85 +60,119 @@ class RecipeGenerationActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RecipeGeneratorTheme {
-                RecipeGeneration(groceries = GroceryUtils.loadGroceries(context = this.applicationContext))
-            }
-        }
-    }
-}
 
-@Composable
-fun RecipeGeneration(groceries: MutableList<GroceryItem>) {
-    var braveMode by remember {mutableStateOf(false)}
-
-    Scaffold (
-        modifier = Modifier.padding(top = 20.dp),
-        topBar = {
-            TopAppBar(
-                title = { Text(text = "Generate Recipe") },
-                modifier = Modifier.background(PinkOrangeHorizontalGradient),
-                backgroundColor = Color.Transparent,
-                contentColor = Color.White
-            )
-        },
-        bottomBar = {
-            BottomAppBar (
-                modifier = Modifier.background(PinkOrangeHorizontalGradient),
-                containerColor = Color.Transparent,
-            ){
-                Row(verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
-                        Text(
-                            color = Color.White,
-                            text = "Brave mode:",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
-                        )
-                        Switch(
-                            checked = braveMode,
-                            onCheckedChange = {braveMode = it},
-                            colors = SwitchDefaults.colors(
-                                checkedTrackColor = Pink,
-                                checkedThumbColor = Orange
-                            )
-                        )
-
-
-                        Text(
-                            text =  AnnotatedString("This will force the AI to use all ingredients, " +
-                                    "Even if they do not fit together. Use at your own risk.",
-                                spanStyles = listOf(
-                                    AnnotatedString.Range(SpanStyle(fontWeight = FontWeight.Bold),81,101))),
-                            color = Color.White,
-                            fontSize = 12.sp,
-                        )
+                    RecipeGeneration(groceries = GroceryUtils.loadGroceries(context = this.applicationContext))
 
                 }
             }
-        },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(onClick = { RecipeGenerator.generateRecipe(groceries.toString(),braveMode) },
-                containerColor = Orange,
-                icon = { Icon(Icons.Rounded.SmartToy, tint = Color.White,
-                    contentDescription = "", )},
-                text = { Text(
-                    "Generate",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 4.dp)
-                )})
         }
-    ){ paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .background(PinkOrangeHorizontalGradient, alpha = 0.5f),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            items(groceries){ grocery ->
-                GroceryItem(grocery)
+    }
+
+@Composable
+fun RecipeGeneration(groceries: MutableList<GroceryItem>) {
+    var braveMode by remember { mutableStateOf(false) }
+    var generatedRecipe :Recipe? by remember { mutableStateOf(null) }
+
+    //This tutorial helped me a bit: https://www.youtube.com/watch?v=FIEnIBq7Ups
+    //And the code in "Favourites.kt"
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = "recipegen") {
+        composable("recipegen") {
+            Scaffold(
+                modifier = Modifier.padding(top = 20.dp),
+                topBar = {
+                    TopAppBar(
+                        title = { Text(text = "Generate Recipe") },
+                        modifier = Modifier.background(PinkOrangeHorizontalGradient),
+                        backgroundColor = Color.Transparent,
+                        contentColor = Color.White
+                    )
+                },
+                bottomBar = {
+                    BottomAppBar(
+                        modifier = Modifier.background(PinkOrangeHorizontalGradient),
+                        containerColor = Color.Transparent,
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(start = 10.dp, end = 10.dp)
+                        ) {
+                            Text(
+                                color = Color.White,
+                                text = "Brave mode:",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
+                            )
+                            Switch(
+                                checked = braveMode,
+                                onCheckedChange = { braveMode = it },
+                                colors = SwitchDefaults.colors(
+                                    checkedTrackColor = Pink,
+                                    checkedThumbColor = Orange
+                                )
+                            )
+
+
+                            Text(
+                                text = AnnotatedString(
+                                    "This will force the AI to use all ingredients, " +
+                                            "Even if they do not fit together. Use at your own risk.",
+                                    spanStyles = listOf(
+                                        AnnotatedString.Range(
+                                            SpanStyle(fontWeight = FontWeight.Bold),
+                                            81,
+                                            101
+                                        )
+                                    )
+                                ),
+                                color = Color.White,
+                                fontSize = 12.sp,
+                            )
+
+                        }
+                    }
+                },
+                floatingActionButton = {
+                    ExtendedFloatingActionButton(onClick =
+                    {
+                        generatedRecipe = RecipeGenerator.generateRecipe(groceries.toString(), braveMode)
+                            navController.navigate("generatedRecipe")
+                        
+                    },
+                        containerColor = Orange,
+                        icon = {
+                            Icon(
+                                Icons.Rounded.SmartToy, tint = Color.White,
+                                contentDescription = "",
+                            )
+                        },
+                        text = {
+                            Text(
+                                "Generate",
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        })
+                }
+            ) { paddingValues ->
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .background(PinkOrangeHorizontalGradient, alpha = 0.5f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(groceries) { grocery ->
+                        GroceryItem(grocery)
+                    }
+                }
+
             }
         }
-
+        
+        composable("generatedRecipe"){
+            RecipeDetails(recipe = generatedRecipe!!)
+        }
     }
 }
 
@@ -192,17 +230,8 @@ fun RecipeDetails(recipe: Recipe) {
             .onSizeChanged { size ->
                 borderVerticalWidth = size.width / 10f;
             },
-        backgroundColor = Color.Transparent,
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { /*TODO*/ },
-                backgroundColor = Orange
-            )
-
-            {
-                Icon(Icons.Default.Edit, "Edit Recipe", tint = Color.White)
-            }
-        }) { innerPadding ->
+        backgroundColor = Color.Transparent)
+    { innerPadding ->
         Column(
             Modifier
                 .padding(innerPadding)
@@ -212,7 +241,7 @@ fun RecipeDetails(recipe: Recipe) {
                     bottom = (borderVerticalWidth / 2 / LocalDensity.current.density).dp
                 )
         ) {
-            Text(recipe.details)
+            Text(text = recipe.details, modifier = Modifier.padding(horizontal = 5.dp))
         }
 
     }
