@@ -16,7 +16,7 @@ object RecipeGenerator {
     private val formatRequest = ". Please format the recipe in the following way:\n" +
             "**Name of Recipe**\n" +
             "Ingredients\n" +
-            "Needed cooking utensils\n" +
+            "Needed Cooking Utensils\n" +
             "Instructions\n" +
             "Cooking Tips\n" +
             "Macros\n";
