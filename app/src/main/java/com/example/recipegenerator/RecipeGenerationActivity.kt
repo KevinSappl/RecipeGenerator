@@ -83,7 +83,7 @@ fun RecipeGeneration(groceries: MutableList<GroceryItem>) {
                         title = { Text(text = "Generate Recipe",
                             color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold) },
                         modifier = Modifier.background(PinkOrangeHorizontalGradient),
-                        backgroundColor = Color.Transparent,
+                        backgroundColor = Color.Transparent
                     )
                 },
                 bottomBar = {
@@ -142,7 +142,7 @@ fun RecipeGeneration(groceries: MutableList<GroceryItem>) {
                         icon = {
                             Icon(
                                 Icons.Rounded.SmartToy, tint = Color.White,
-                                contentDescription = "",
+                                contentDescription = "Generate Recipe",
                             )
                         },
                         text = {
@@ -194,7 +194,7 @@ fun RecipeDetails(recipe: Recipe) {
 
     Scaffold(topBar = {
         TopAppBar(
-            title = { Text(text = recipe.name) },
+            title = { Text(text = recipe.name, fontSize = 20.sp, fontWeight = FontWeight.Bold) },
             modifier = Modifier.background(PinkOrangeHorizontalGradient),
             backgroundColor = Color.Transparent,
             contentColor = Color.White
