@@ -24,8 +24,6 @@ object RecipeGenerator {
     fun generateRecipe(ingredients: String, useAllIngredients: Boolean): Recipe {
         val recipeGenerationPrompt: String = generateRecipeGenerationPrompt(ingredients, useAllIngredients)
 
-        Recipe(name = "", details = "", favourite = false )
-
         return turnResponseIntoRecipe(llmAPI.getResponse(recipeGenerationPrompt));
     }
 
