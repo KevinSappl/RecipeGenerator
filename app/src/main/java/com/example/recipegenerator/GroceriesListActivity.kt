@@ -1,10 +1,12 @@
 package com.example.recipegenerator
 
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.SearchView
+import android.widget.Toast
 import java.io.File
 
 class GroceriesListActivity : AppCompatActivity() {
@@ -12,6 +14,7 @@ class GroceriesListActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var groceryAdapter: GroceryAdapter
     private lateinit var searchView: SearchView
+    private lateinit var btnGenerateRecipe: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,9 +24,10 @@ class GroceriesListActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recyclerView)
         searchView = findViewById(R.id.searchView)
+        btnGenerateRecipe = findViewById(R.id.btnGenerateRecipe)
 
         val groceries = GroceryUtils.loadGroceries(this)
-        groceryAdapter = GroceryAdapter(groceries) { grocery ->
+        groceryAdapter = GroceryAdapter(groceries.toMutableList()) { grocery ->
             deleteGrocery(grocery)
         }
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -35,16 +39,27 @@ class GroceriesListActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                groceryAdapter.getFilter().filter(newText)
+                groceryAdapter.filter.filter(newText)
                 return true
             }
         })
+
+        btnGenerateRecipe.setOnClickListener {
+            val selectedGroceries = groceryAdapter.getSelectedItems()
+            generateRecipe(selectedGroceries)
+        }
     }
 
     private fun deleteGrocery(grocery: GroceryItem) {
         GroceryUtils.deleteGrocery(this, grocery)
         val updatedGroceries = GroceryUtils.loadGroceries(this)
-        groceryAdapter.updateData(updatedGroceries)
+        groceryAdapter.updateData(updatedGroceries.toMutableList())
+    }
+
+    private fun generateRecipe(selectedGroceries: List<GroceryItem>) {
+        // Implement your recipe generation logic here
+        // For example, display a Toast message with the selected groceries
+        Toast.makeText(this, "Selected groceries: $selectedGroceries", Toast.LENGTH_LONG).show()
     }
 
     private fun createSampleJsonFile() {
