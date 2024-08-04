@@ -205,6 +205,9 @@ fun RecipeDetails(recipe: Recipe) {
     //This state variable is needed to get size of the border rectangles
     //I do not know if there is a better way of doing this.
     var borderVerticalWidth by remember { mutableStateOf(0f) }
+
+    var isFavourite by remember { mutableStateOf(recipe.favourite) }
+
     val context = LocalContext.current
 
     Scaffold(topBar = {
@@ -216,11 +219,12 @@ fun RecipeDetails(recipe: Recipe) {
             actions = {
                 IconButton(onClick = {
                     recipe.favourite = !recipe.favourite
+                    isFavourite = recipe.favourite
 
                    runBlocking { RecipeDB.getDatabase(context).recipeDao().update(recipe)};
                 }){
                     Icon(painter = painterResource(
-                        id = if(recipe.favourite) R.drawable.star_filled_512 else R.drawable.star_512 ),
+                        id = if(isFavourite) R.drawable.star_filled_512 else R.drawable.star_512 ),
                         contentDescription = "Favourite Recipe",
                         Modifier
                             .padding(horizontal = 5.dp)
@@ -283,14 +287,15 @@ fun RecipeDetails(recipe: Recipe) {
 @Composable
 fun Preview() {
     RecipeGeneratorTheme {
-/*        RecipeGeneration(mutableListOf(
+        RecipeGeneration(mutableListOf(
             GroceryItem("Tomatoes"),
             GroceryItem("Potatoes"),
             GroceryItem("Carrots"),
             GroceryItem("Onions"),
             GroceryItem("Garlic")
-        ))*/
-        RecipeDetails(recipe = Recipe(1, "Schnitzel",
-            "SHSDIHJAOSIDJASOIDJIOASDJIOSAJD", false))
+        ))
+       /* RecipeDetails(recipe = Recipe(1, "Schnitzel",
+            "SHSDIHJAOSIDJASOIDJIOASDJIOSAJD", false))*/
     }
+
 }
