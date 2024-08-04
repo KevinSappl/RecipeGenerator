@@ -9,10 +9,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -274,6 +277,8 @@ fun RecipeDetails(recipe: Recipe) {
                     end = (borderVerticalWidth / LocalDensity.current.density).dp,
                     bottom = (borderVerticalWidth / 2 / LocalDensity.current.density).dp
                 )
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
             Text(text = recipe.details, modifier = Modifier.padding(horizontal = 5.dp),
                 fontSize = 14.sp)
