@@ -20,6 +20,11 @@
         android:theme="@style/Theme.RecipeGenerator"
         tools:targetApi="31">
         <activity
+            android:name=".RecipeGenerationActivity"
+            android:exported="false"
+            android:label="@string/title_activity_recipe_generation"
+            android:theme="@style/Theme.RecipeGenerator" />
+        <activity
             android:name=".Favourites"
             android:exported="true"
             android:label="@string/title_activity_favourites"

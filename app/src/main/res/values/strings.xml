@@ -8,4 +8,5 @@
     <string name="title_activity_favourites">Favourites</string>
     <string name="edit">Edit</string>
     <string name="recipename">RecipeName</string>
+    <string name="title_activity_recipe_generation">RecipeGenerationActivity</string>
 </resources>

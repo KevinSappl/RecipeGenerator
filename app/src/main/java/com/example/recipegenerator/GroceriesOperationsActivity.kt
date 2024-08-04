@@ -26,7 +26,7 @@ class GroceriesOperationsActivity : ComponentActivity() {
                     startActivity(Intent(this, FoodScanner::class.java))
                 },
                 onGenerateRecipeClick = {
-                    startActivity(Intent(this, GroceriesListActivity::class.java))
+                    startActivity(Intent(this, RecipeGenerationActivity::class.java))
                 }
             )
         }
