@@ -44,7 +44,8 @@ class MainMenuActivity : AppCompatActivity() {
         }
 
         btnFavourites.setOnClickListener {
-            // TODO: Реализовать переход к активити "Избранное"
+            val intent = Intent(this, Favourites::class.java)
+            startActivity(intent)
         }
     }
 
