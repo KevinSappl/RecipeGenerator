@@ -75,16 +75,43 @@ class GroceryAdapter(
             }
 
             override fun publishResults(charSequence: CharSequence?, filterResults: FilterResults?) {
-                filteredGroceries = filterResults?.values as MutableList<GroceryItem>
-                notifyDataSetChanged()
+                val resultValues = filterResults?.values
+                if (resultValues is MutableList<*>) {
+                    filteredGroceries = resultValues.filterIsInstance<GroceryItem>().toMutableList()
+                    notifyDataSetChanged()
+                }
             }
         }
     }
 
     fun updateData(newGroceries: MutableList<GroceryItem>) {
+        val oldGroceries = groceries
         groceries = newGroceries
         filteredGroceries = newGroceries
-        notifyDataSetChanged()
+
+        val newSet = newGroceries.toSet()
+        val oldSet = oldGroceries.toSet()
+
+        // Find removed items
+        for (i in oldGroceries.indices.reversed()) {
+            if (!newSet.contains(oldGroceries[i])) {
+                notifyItemRemoved(i)
+            }
+        }
+
+        // Find added items
+        for (i in newGroceries.indices) {
+            if (!oldSet.contains(newGroceries[i])) {
+                notifyItemInserted(i)
+            }
+        }
+
+        // Find changed items
+        for (i in newGroceries.indices) {
+            if (oldGroceries.size > i && oldGroceries[i] != newGroceries[i]) {
+                notifyItemChanged(i)
+            }
+        }
     }
 
     fun getSelectedItems(): List<GroceryItem> {

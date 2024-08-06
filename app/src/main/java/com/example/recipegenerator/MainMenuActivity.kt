@@ -15,10 +15,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.recipegenerator.recipeDB.Recipe
 import com.example.recipegenerator.recipeDB.RecipeDB
 import com.example.recipegenerator.ui.theme.RecipeGeneratorTheme
@@ -33,7 +33,7 @@ class MainMenuActivity : ComponentActivity() {
         setContent {
             RecipeGeneratorTheme {
                 MainMenuScreen(
-                    onFoodsClick = { startActivity(Intent(this, GroceriesOperationsActivity::class.java)) },
+                    onFoodsClick = { startActivity(Intent(this, RecipeGenerationActivity::class.java)) },
                     onScanClick = { startActivity(Intent(this, FoodScanner::class.java)) },
                     onFavouritesClick = { startActivity(Intent(this, Favourites::class.java)) },
                     onRecipeClick = { recipeId ->
@@ -82,56 +82,60 @@ fun MainMenuScreen(
             )
         },
         content = { paddingValues ->
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
                     .padding(paddingValues)
             ) {
-                LazyColumn(
+                Column(
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f)
+                        .fillMaxSize()
                 ) {
-                    items(recipes) { recipe ->
-                        ListItem(recipe = recipe, onRecipeClick = { onRecipeClick(recipe.id) })
-                    }
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Button(
-                        onClick = onFoodsClick,
+                    LazyColumn(
                         modifier = Modifier
+                            .fillMaxHeight()
                             .weight(1f)
-                            .padding(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                     ) {
-                        Text(text = "Lebensmittel", color = MaterialTheme.colorScheme.onPrimary)
+                        items(recipes) { recipe ->
+                            ListItem(recipe = recipe, onRecipeClick = { onRecipeClick(recipe.id) })
+                        }
                     }
 
-                    Button(
-                        onClick = onScanClick,
+                    Row(
                         modifier = Modifier
-                            .weight(1f)
-                            .padding(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "SCAN", color = MaterialTheme.colorScheme.onPrimary)
-                    }
+                        Button(
+                            onClick = onFoodsClick,
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                        ) {
+                            Text(text = "Lebensmittel", color = MaterialTheme.colorScheme.onPrimary, maxLines = 1)
+                        }
 
-                    Button(
-                        onClick = onFavouritesClick,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                    ) {
-                        Text(text = "Favoriten", color = MaterialTheme.colorScheme.onPrimary)
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        FloatingActionButton(
+                            onClick = onScanClick,
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(56.dp)
+                        ) {
+                            Text(text = "+", color = MaterialTheme.colorScheme.onPrimary, fontSize = 24.sp)
+                        }
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Button(
+                            onClick = onFavouritesClick,
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                        ) {
+                            Text(text = "Favoriten", color = MaterialTheme.colorScheme.onPrimary, maxLines = 1)
+                        }
                     }
                 }
             }
