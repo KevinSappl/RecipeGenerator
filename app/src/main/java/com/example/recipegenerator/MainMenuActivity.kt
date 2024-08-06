@@ -1,88 +1,152 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.recipegenerator
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.ListView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.example.recipegenerator.recipeDB.Recipe
 import com.example.recipegenerator.recipeDB.RecipeDB
-import kotlinx.coroutines.CoroutineScope
+import com.example.recipegenerator.ui.theme.RecipeGeneratorTheme
+import com.example.recipegenerator.ui.theme.PinkOrangeHorizontalGradient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainMenuActivity : AppCompatActivity() {
-    private lateinit var recipesListView: ListView
-    private val coroutineScope = CoroutineScope(Dispatchers.Main)
-    private lateinit var btnFoods: Button
-    private lateinit var btnScan: Button
-    private lateinit var btnFavourites: Button
-
+class MainMenuActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_menu)
-
-        recipesListView = findViewById(R.id.recipesList)
-        btnFoods = findViewById(R.id.btnFoods)
-        btnScan = findViewById(R.id.btnScan)
-        btnFavourites = findViewById(R.id.btnFavorites)
-
-        insertDummyData()
-
-        loadRecipes()
-
-        btnFoods.setOnClickListener {
-            val intent = Intent(this, GroceriesOperationsActivity::class.java)
-            startActivity(intent)
-        }
-
-        btnScan.setOnClickListener {
-            val intent = Intent(this, FoodScanner::class.java)
-            startActivity(intent)
-        }
-
-        btnFavourites.setOnClickListener {
-            val intent = Intent(this, Favourites::class.java)
-            startActivity(intent)
-        }
-    }
-
-    private fun loadRecipes() {
-        coroutineScope.launch {
-            val recipes = withContext(Dispatchers.IO) {
-                RecipeDB.getDatabase(this@MainMenuActivity).recipeDao().getAll()
+        setContent {
+            RecipeGeneratorTheme {
+                MainMenuScreen(
+                    onFoodsClick = { startActivity(Intent(this, GroceriesOperationsActivity::class.java)) },
+                    onScanClick = { startActivity(Intent(this, FoodScanner::class.java)) },
+                    onFavouritesClick = { startActivity(Intent(this, Favourites::class.java)) },
+                    onRecipeClick = { recipeId ->
+                        val intent = Intent(this, RecipeDetailActivity::class.java).apply {
+                            putExtra("recipe_id", recipeId)
+                        }
+                        startActivity(intent)
+                    }
+                )
             }
-            updateUI(recipes)
         }
     }
+}
 
-    private fun updateUI(recipes: List<Recipe>) {
-        val recipeNames = recipes.map { it.name }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, recipeNames)
-        recipesListView.adapter = adapter
+@Composable
+fun MainMenuScreen(
+    onFoodsClick: () -> Unit,
+    onScanClick: () -> Unit,
+    onFavouritesClick: () -> Unit,
+    onRecipeClick: (Int) -> Unit
+) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    var recipes by remember { mutableStateOf(listOf<Recipe>()) }
 
-        recipesListView.setOnItemClickListener { _, _, position, _ ->
-            val selectedRecipe = recipes[position]
-            val intent = Intent(this, RecipeDetailActivity::class.java).apply {
-                putExtra("recipe_id", selectedRecipe.id)
-            }
-            startActivity(intent)
-        }
-    }
-
-    private fun insertDummyData() {
+    LaunchedEffect(Unit) {
         coroutineScope.launch {
-            withContext(Dispatchers.IO) {
-                val dao = RecipeDB.getDatabase(this@MainMenuActivity).recipeDao()
-                if (dao.getAll().isEmpty()) {
-                    dao.insert(
-                        Recipe(id = 1, name = "Noodles", details = "Ingredients: Noodles\nInstructions: Boil water\nTips: Stir occasionally", favourite = false),
-                        Recipe(id = 2, name = "Wiener Schnitzel", details = "Ingredients: Wiener Schnitzel\nInstructions: Fry it\nTips: Serve with lemon", favourite = true)
-                    )
+            val loadedRecipes = withContext(Dispatchers.IO) {
+                RecipeDB.getDatabase(context).recipeDao().getAll()
+            }
+            recipes = loadedRecipes
+        }
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Recipe Generator") },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    titleContentColor = Color.White
+                ),
+                modifier = Modifier
+                    .background(PinkOrangeHorizontalGradient)
+                    .padding(top = 40.dp)
+            )
+        },
+        content = { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(paddingValues)
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                ) {
+                    items(recipes) { recipe ->
+                        ListItem(recipe = recipe, onRecipeClick = { onRecipeClick(recipe.id) })
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Button(
+                        onClick = onFoodsClick,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    ) {
+                        Text(text = "Lebensmittel", color = MaterialTheme.colorScheme.onPrimary)
+                    }
+
+                    Button(
+                        onClick = onScanClick,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    ) {
+                        Text(text = "SCAN", color = MaterialTheme.colorScheme.onPrimary)
+                    }
+
+                    Button(
+                        onClick = onFavouritesClick,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    ) {
+                        Text(text = "Favoriten", color = MaterialTheme.colorScheme.onPrimary)
+                    }
                 }
             }
         }
-    }
+    )
+}
+
+@Composable
+fun ListItem(recipe: Recipe, onRecipeClick: () -> Unit) {
+    Text(
+        text = recipe.name,
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onRecipeClick)
+            .padding(16.dp)
+    )
 }
