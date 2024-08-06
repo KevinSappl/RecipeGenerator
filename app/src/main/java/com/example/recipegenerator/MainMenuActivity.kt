@@ -17,7 +17,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -36,7 +35,7 @@ class MainMenuActivity : ComponentActivity() {
         setContent {
             RecipeGeneratorTheme {
                 MainMenuScreen(
-                    onFoodsClick = { startActivity(Intent(this, GroceriesOperationsActivity::class.java)) },
+                    onFoodsClick = { startActivity(Intent(this, RecipeGenerationActivity::class.java)) },
                     onScanClick = { startActivity(Intent(this, FoodScanner::class.java)) },
                     onFavouritesClick = { startActivity(Intent(this, Favourites::class.java)) },
                     onShoppingListClick = { startActivity(Intent(this, ShoppingList::class.java)) },
