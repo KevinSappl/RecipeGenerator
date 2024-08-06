@@ -11,10 +11,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -33,9 +36,10 @@ class MainMenuActivity : ComponentActivity() {
         setContent {
             RecipeGeneratorTheme {
                 MainMenuScreen(
-                    onFoodsClick = { startActivity(Intent(this, RecipeGenerationActivity::class.java)) },
+                    onFoodsClick = { startActivity(Intent(this, GroceriesOperationsActivity::class.java)) },
                     onScanClick = { startActivity(Intent(this, FoodScanner::class.java)) },
                     onFavouritesClick = { startActivity(Intent(this, Favourites::class.java)) },
+                    onShoppingListClick = { startActivity(Intent(this, ShoppingList::class.java)) },
                     onRecipeClick = { recipeId ->
                         val intent = Intent(this, RecipeDetailActivity::class.java).apply {
                             putExtra("recipe_id", recipeId)
@@ -53,6 +57,7 @@ fun MainMenuScreen(
     onFoodsClick: () -> Unit,
     onScanClick: () -> Unit,
     onFavouritesClick: () -> Unit,
+    onShoppingListClick: () -> Unit,
     onRecipeClick: (Int) -> Unit
 ) {
     val context = LocalContext.current
@@ -72,6 +77,11 @@ fun MainMenuScreen(
         topBar = {
             TopAppBar(
                 title = { Text("Recipe Generator") },
+                actions = {
+                    IconButton(onClick = onShoppingListClick) {
+                        Icon(Icons.Default.List, contentDescription = "Shopping List")
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
                     titleContentColor = Color.White
