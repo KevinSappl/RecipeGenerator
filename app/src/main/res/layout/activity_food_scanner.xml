@@ -9,8 +9,8 @@
 
     <SurfaceView
         android:id="@+id/camera_view"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="320dp"
+        android:layout_height="320dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="83dp"
