@@ -20,7 +20,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "BEARER_TOKEN", "\"${getBearerToken()}\"")
+        buildConfigField("String", "BEARER_TOKEN", "\"${getKey("BEARER_TOKEN")}\"")
+        buildConfigField("String", "API_KEY", "\"${getKey("API_KEY")}\"")
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -134,12 +135,13 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
 }
 
-fun getBearerToken(): String {
+fun getKey(key: String): String {
     val properties = Properties()
     val localPropertiesFile = rootProject.file("local.properties")
     if (localPropertiesFile.exists()) {
         properties.load(FileInputStream(localPropertiesFile))
-        return properties.getProperty("BEARER_TOKEN", "")
+        return properties.getProperty(key, "")
     }
     return ""
 }
+

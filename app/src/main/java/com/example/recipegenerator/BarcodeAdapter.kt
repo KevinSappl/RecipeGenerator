@@ -16,7 +16,7 @@ class BarcodeAdapter(private val barcodeList: MutableList<GroceryItem>) :
     }
 
     override fun onBindViewHolder(holder: BarcodeViewHolder, position: Int) {
-        holder.barcodeValue.text = barcodeList[position].toString()
+        holder.barcodeValue.text = barcodeList[position].name
     }
 
     override fun getItemCount(): Int {

@@ -177,7 +177,7 @@ class FoodScanner : AppCompatActivity() {
                                         val builder: AlertDialog.Builder =
                                             AlertDialog.Builder(this@FoodScanner)
                                         builder
-                                            .setTitle("Do you want to add $barcodeValue to the List?")
+                                            .setTitle("Do you want to add $title to the List?")
                                             .setPositiveButton("Yes") { dialog, which ->
                                                 itemList.add(GroceryItem("$title, $category, $weight"))
                                                 val groceryItem = GroceryItem("$title, $category, $weight") //ist wiederholt, muss in eine liste gespeichert werden

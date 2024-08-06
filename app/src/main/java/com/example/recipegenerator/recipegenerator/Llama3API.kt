@@ -1,5 +1,6 @@
 package com.example.recipegenerator.recipegenerator
 
+import com.example.recipegenerator.BuildConfig
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -12,7 +13,7 @@ import ru.gildor.coroutines.okhttp.await
 //The model used is llama3 70b
 
 class Llama3API {
-    private val requestCreator: Llama3RequestCreator = Llama3RequestCreator("")
+    private val requestCreator: Llama3RequestCreator = Llama3RequestCreator(BuildConfig.API_KEY)
     private val client = OkHttpClient();
 
     fun getResponse (messageToLlama3: String): String {
