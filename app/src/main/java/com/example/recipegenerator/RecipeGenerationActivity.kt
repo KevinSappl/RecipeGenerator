@@ -145,15 +145,11 @@ fun RecipeGeneration(groceries: MutableList<GroceryItem>) {
                     ExtendedFloatingActionButton(onClick =
                     {
                         if(groceries.size == 0){
-                            Toast.makeText(context, "Please add some ingredients.", Toast.LENGTH_LONG)
+                            Toast.makeText(context, "Please add some ingredients.", Toast.LENGTH_LONG).show()
                             return@ExtendedFloatingActionButton
                         }
 
-                        val ingredients = ""
-
-                        for (grocery in groceries) ingredients + grocery.name + ","
-
-                        generatedRecipe = RecipeGenerator.generateRecipe(ingredients, braveMode)
+                        generatedRecipe = RecipeGenerator.generateRecipe(groceries, braveMode)
                         runBlocking { RecipeDB.getDatabase(context).recipeDao().insert(
                             generatedRecipe!!
                         )};

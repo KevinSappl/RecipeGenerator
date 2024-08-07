@@ -1,5 +1,6 @@
 package com.example.recipegenerator.recipegenerator
 
+import com.example.recipegenerator.GroceryItem
 import com.example.recipegenerator.recipeDB.Recipe
 
 
@@ -21,7 +22,9 @@ object RecipeGenerator {
             "Cooking Tips\n" +
             "Macros\n";
 
-    fun generateRecipe(ingredients: String, useAllIngredients: Boolean): Recipe {
+    fun generateRecipe(groceries: MutableList<GroceryItem>, useAllIngredients: Boolean): Recipe {
+        val ingredients = groceriesToString(groceries)
+
         val recipeGenerationPrompt: String = generateRecipeGenerationPrompt(ingredients, useAllIngredients)
 
         return turnResponseIntoRecipe(llmAPI.getResponse(recipeGenerationPrompt));
@@ -41,6 +44,18 @@ object RecipeGenerator {
         val detailsOfRecipe = substring.substringAfter("**")
 
         return Recipe(name = nameOfRecipe, details = detailsOfRecipe, favourite = false);
+    }
+
+    private fun groceriesToString(groceries: MutableList<GroceryItem>): String {
+        val ingredients = StringBuilder()
+
+        for (grocery in groceries) {
+            ingredients.append(grocery.name)
+            ingredients.append(", ")
+        }
+
+
+        return ingredients.substring(0, ingredients.length -2)
     }
 
 
