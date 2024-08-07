@@ -123,7 +123,7 @@ fun MainMenuScreen(
                             modifier = Modifier.weight(1f),
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                         ) {
-                            Text(text = "Lebensmittel", color = MaterialTheme.colorScheme.onPrimary, maxLines = 1)
+                            Text(text = "Generate", color = MaterialTheme.colorScheme.onPrimary, maxLines = 1)
                         }
 
                         Spacer(modifier = Modifier.width(16.dp))

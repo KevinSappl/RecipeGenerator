@@ -1,12 +1,11 @@
 package com.example.recipegenerator
 
-import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,8 +21,6 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.StarRate
-import androidx.compose.material.icons.outlined.StarRate
 import androidx.compose.material.icons.rounded.SmartToy
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -147,7 +144,16 @@ fun RecipeGeneration(groceries: MutableList<GroceryItem>) {
                 floatingActionButton = {
                     ExtendedFloatingActionButton(onClick =
                     {
-                        generatedRecipe = RecipeGenerator.generateRecipe(groceries.toString(), braveMode)
+                        if(groceries.size == 0){
+                            Toast.makeText(context, "Please add some ingredients.", Toast.LENGTH_LONG)
+                            return@ExtendedFloatingActionButton
+                        }
+
+                        val ingredients = ""
+
+                        for (grocery in groceries) ingredients + grocery.name + ","
+
+                        generatedRecipe = RecipeGenerator.generateRecipe(ingredients, braveMode)
                         runBlocking { RecipeDB.getDatabase(context).recipeDao().insert(
                             generatedRecipe!!
                         )};
