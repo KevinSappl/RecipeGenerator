@@ -128,7 +128,7 @@ fun ShoppingListApp(viewModel: ShoppingListViewModel = viewModel()) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Text(text = "Nothing there yet.")
+                        Text(text = "This is your new Shopping List.")
                         Text(text = "Add some items to show here!")
                     }
                 }
